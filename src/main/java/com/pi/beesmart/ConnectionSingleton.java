@@ -16,7 +16,7 @@ public class ConnectionSingleton {
         if (connection == null) {
             connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/beesmart", //
                     "root", //
-                    "");
+                    "beesmart");
         }
         return connection;
     }
