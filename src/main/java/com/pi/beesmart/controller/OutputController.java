@@ -10,7 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/")
 public class OutputController {
-    private static final GpioPinDigitalOutput[] pin = new GpioPinDigitalOutput[31];
+    private static GpioPinDigitalOutput[] pin = new GpioPinDigitalOutput[31];
 
 
     @GetMapping("/output/")
@@ -55,7 +55,6 @@ public class OutputController {
             GpioController gpioPi = GpioFactory.getInstance();
             pin[25] = gpioPi.provisionDigitalOutputPin(RaspiPin.GPIO_25, PinState.LOW);
         }
-
         return pin[pinNum];
     }
 }
