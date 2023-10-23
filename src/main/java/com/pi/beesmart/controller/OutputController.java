@@ -6,7 +6,7 @@ import com.pi4j.io.gpio.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/")
 public class OutputController {
