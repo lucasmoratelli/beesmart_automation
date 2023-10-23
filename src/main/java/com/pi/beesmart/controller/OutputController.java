@@ -29,6 +29,7 @@ public class OutputController {
     public OutputDTO putOutput(@RequestBody OutputDTO dto, @PathVariable int gpio) {
 
         getPin(gpio).setState(dto.status);
+        System.out.println("pin is " + dto.status);
 
         final OutputConverter converter = new OutputConverter();
         return converter.toDTO(new OutputDAO().update(converter.toEntity(dto), gpio));
