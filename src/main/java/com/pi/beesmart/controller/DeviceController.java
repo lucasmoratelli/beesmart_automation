@@ -3,6 +3,8 @@ package com.pi.beesmart.controller;
 import com.pi.beesmart.model.OutputDAO;
 import com.pi.beesmart.model.OutputEntity;
 import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import jdk.jfr.Frequency;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,8 +70,11 @@ public class DeviceController {
             GpioController gpioPi = GpioFactory.getInstance();
             in[2] = gpioPi.provisionDigitalInputPin(RaspiPin.GPIO_02);
         }
-        if (in[7].isHigh()) {
-            deviceController.getOutPin(15).toggle();
-        }
+        in[7].addListener((GpioPinListenerDigital) event -> {
+            // display pin state on console
+            if (in[7].isHigh()) {
+                getOutPin(15).toggle();
+            }
+         });
     }
 }
