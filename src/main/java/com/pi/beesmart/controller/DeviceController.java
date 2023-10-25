@@ -74,6 +74,7 @@ public class DeviceController {
             // display pin state on console
             if (in[7].isHigh()) {
                 getOutPin(15).toggle();
+                System.out.println("pressed");
             }
          });
     }
