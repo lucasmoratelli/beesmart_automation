@@ -17,6 +17,10 @@ public class ConnectionSingleton {
             connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/BeeSmart", //
                     "root", //
                     "beesmart");
+
+//            connection = DriverManager.getConnection("jdbc:mariadb://localhost:3310/beesmart", //
+//                    "root", //
+//                    "Cedup");
         }
         return connection;
     }
