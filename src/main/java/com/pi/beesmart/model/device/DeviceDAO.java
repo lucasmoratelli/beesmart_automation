@@ -37,15 +37,16 @@ public class DeviceDAO {
         }
     }
 
-    public DeviceEntity getActuatorById(int idFilter) {
+    public DeviceEntity getActuatorById(int idFilter, int typeFilter) {
         final String sql = """
                 SELECT d.*, a.type AS actuator_type
                 FROM BeeSmart.device AS d
                 JOIN BeeSmart.gpio AS g ON d.gpio_pinNum = g.pinNum
                 JOIN BeeSmart.actuator AS a ON g.actuator_gpioId = a.id
-                WHERE g.type = 0 AND d.id = ?;""";
+                WHERE g.type = ? AND d.id = ?;""";
         try (final PreparedStatement preparedStatement = ConnectionSingleton.getConnection().prepareStatement(sql)) {
-            preparedStatement.setInt(1, idFilter);
+            preparedStatement.setInt(1, typeFilter);
+            preparedStatement.setInt(2, idFilter);
 
             try (final ResultSet resultadoOutputs = preparedStatement.executeQuery()) {
 
