@@ -84,7 +84,7 @@ public class DeviceController {
         }
         if (in[8] == null) {
             GpioController gpioPi = GpioFactory.getInstance();
-            in[8] = gpioPi.provisionDigitalInputPin(RaspiPin.GPIO_07);
+            in[8] = gpioPi.provisionDigitalInputPin(RaspiPin.GPIO_08);
         }
         if (in[0] == null) {
             GpioController gpioPi = GpioFactory.getInstance();
