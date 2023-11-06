@@ -12,9 +12,9 @@ public class DeviceDAO {
     public List<DeviceEntity> getAllActuators() {
         final String sql = """
                 SELECT d.*, a.type AS actuator_type
-                FROM BeeSmart.device AS d
-                JOIN BeeSmart.gpio AS g ON d.gpio_pinNum = g.pinNum
-                JOIN BeeSmart.actuator AS a ON g.actuator_gpioId = a.id
+                FROM device AS d
+                JOIN gpio AS g ON d.gpio_pinNum = g.pinNum
+                JOIN actuator AS a ON g.actuator_gpioId = a.id
                 WHERE g.type = 0;""";
         try (final PreparedStatement preparedStatement = ConnectionSingleton.getConnection().prepareStatement(sql); //
                 final ResultSet resultadoOutputs = preparedStatement.executeQuery()) {
@@ -40,9 +40,9 @@ public class DeviceDAO {
     public DeviceEntity getActuatorById(int idFilter, int typeFilter) {
         final String sql = """
                 SELECT d.*, a.type AS actuator_type
-                FROM BeeSmart.device AS d
-                JOIN BeeSmart.gpio AS g ON d.gpio_pinNum = g.pinNum
-                JOIN BeeSmart.actuator AS a ON g.actuator_gpioId = a.id
+                FROM device AS d
+                JOIN gpio AS g ON d.gpio_pinNum = g.pinNum
+                JOIN actuator AS a ON g.actuator_gpioId = a.id
                 WHERE g.type = ? AND d.id = ?;""";
         try (final PreparedStatement preparedStatement = ConnectionSingleton.getConnection().prepareStatement(sql)) {
             preparedStatement.setInt(1, typeFilter);
