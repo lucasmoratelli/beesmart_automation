@@ -77,14 +77,13 @@ public class DeviceController {
         return out[pinNum];
     }
     public void getInPin() {
-        DeviceController deviceController = new DeviceController();
-        if (in[9] == null) {
-            GpioController gpioPi = GpioFactory.getInstance();
-            in[9] = gpioPi.provisionDigitalInputPin(RaspiPin.GPIO_09);
-        }
         if (in[8] == null) {
             GpioController gpioPi = GpioFactory.getInstance();
             in[8] = gpioPi.provisionDigitalInputPin(RaspiPin.GPIO_08);
+        }
+        if (in[9] == null) {
+            GpioController gpioPi = GpioFactory.getInstance();
+            in[9] = gpioPi.provisionDigitalInputPin(RaspiPin.GPIO_09);
         }
         if (in[0] == null) {
             GpioController gpioPi = GpioFactory.getInstance();
@@ -97,7 +96,6 @@ public class DeviceController {
         in[8].addListener((GpioPinListenerDigital) event -> {
             log(5, 1);
 
-            // display pin state on console
             if (in[8].isHigh()) {
                 log(1, 0);
                 System.out.println("pressed");
