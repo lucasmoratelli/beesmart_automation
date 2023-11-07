@@ -47,8 +47,8 @@ public class DeviceController {
         DeviceConverter deviceConverter = new DeviceConverter();
         DeviceDTO device = deviceConverter.toDTO(deviceDAO.getActuatorById(id, type));
         System.out.println(device.gpio);
-        System.out.println(device.type);
-        if (device.type == 0) {
+        System.out.println(device.name);
+        if (type == 0) {
             var pinState = getOutPin(device.gpio).getState();
             int value;
             if (pinState.isHigh()){
@@ -101,36 +101,37 @@ public class DeviceController {
             in[2] = gpioPi.provisionDigitalInputPin(RaspiPin.GPIO_02);
         }
         in[8].addListener((GpioPinListenerDigital) event -> {
-            toggleAndLog(5, 1);
 
             if (in[8].isHigh()) {
+
+                toggleAndLog(5, 1);
                 toggleAndLog(1, 0);
                 System.out.println("pressed");
             }
         });
         in[9].addListener((GpioPinListenerDigital) event -> {
-            toggleAndLog(6, 1);
 
             // display pin state on console
             if (in[9].isHigh()) {
+                toggleAndLog(6, 1);
                 toggleAndLog(2, 0);
                 System.out.println("pressed");
             }
         });
         in[0].addListener((GpioPinListenerDigital) event -> {
-            toggleAndLog(7, 1);
 
             // display pin state on console
             if (in[0].isHigh()) {
+                toggleAndLog(7, 1);
                 toggleAndLog(3, 0);
                 System.out.println("pressed");
             }
         });
         in[2].addListener((GpioPinListenerDigital) event -> {
-            toggleAndLog(8, 1);
 
             // display pin state on console
             if (in[2].isHigh()) {
+                toggleAndLog(8, 1);
                 toggleAndLog(4, 0);
                 System.out.println("pressed");
             }
