@@ -45,10 +45,10 @@ public class DeviceController {
         DeviceDAO deviceDAO = new DeviceDAO();
         DeviceConverter deviceConverter = new DeviceConverter();
         DeviceDTO device = deviceConverter.toDTO(deviceDAO.getActuatorById(id, type));
-        getOutPin(device.gpio).toggle();
         System.out.println(device.gpio);
         System.out.println(device.name);
         if (type == 0) {
+            getOutPin(device.gpio).toggle();
             var pinState = getOutPin(device.gpio).getState();
             int value;
             if (pinState.isHigh()){
