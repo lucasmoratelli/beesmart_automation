@@ -37,7 +37,6 @@ public class DeviceController {
     @GetMapping("/toggle/{id}")
     public boolean getToggle(@PathVariable int id) {
         int gpio = toggleAndLog(id, 0).gpio;
-        getOutPin(gpio).toggle();
 
         return getOutPin(gpio).isHigh();
     }
@@ -46,6 +45,7 @@ public class DeviceController {
         DeviceDAO deviceDAO = new DeviceDAO();
         DeviceConverter deviceConverter = new DeviceConverter();
         DeviceDTO device = deviceConverter.toDTO(deviceDAO.getActuatorById(id, type));
+        getOutPin(device.gpio).toggle();
         System.out.println(device.gpio);
         System.out.println(device.name);
         if (type == 0) {
