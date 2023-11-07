@@ -58,7 +58,7 @@ public class DeviceController {
             }
             deviceDAO.addLog(id, device.type, value);
         }else {
-            deviceDAO.addLog(id, device.type, 1);
+            deviceDAO.addLog(id, type, 1);
         }
         return device;
 
