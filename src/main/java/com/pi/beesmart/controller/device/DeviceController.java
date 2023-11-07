@@ -46,6 +46,8 @@ public class DeviceController {
         DeviceDAO deviceDAO = new DeviceDAO();
         DeviceConverter deviceConverter = new DeviceConverter();
         DeviceDTO device = deviceConverter.toDTO(deviceDAO.getActuatorById(id, type));
+        System.out.println(device.gpio);
+        System.out.println(device.type);
         if (device.type == 0) {
             var pinState = getOutPin(device.gpio).getState();
             int value;
