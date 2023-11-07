@@ -51,7 +51,7 @@ public class DeviceDAO {
 
                 int gpio = resultadoOutputs.getInt("gpio_pinNum");
                 String name = resultadoOutputs.getString("name");
-                int type = resultadoOutputs.getInt("actuator_type");
+                int type = resultadoOutputs.getInt("type");
 
                 return new DeviceEntity(idFilter, gpio, name, type, 0);
             } catch (Exception e) {
