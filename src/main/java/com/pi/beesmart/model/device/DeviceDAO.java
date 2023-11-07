@@ -64,14 +64,14 @@ public class DeviceDAO {
 
     private static String getSql(int typeFilter) {
         String sql = """
-            SELECT d.*, a.type AS actuator_type
+            SELECT d.*, a.type AS type
             FROM device AS d
             JOIN gpio AS g ON d.gpio_pinNum = g.pinNum
             JOIN actuator AS a ON g.actuator_gpioId = a.id
             WHERE g.type = ? AND d.id = ?;""";
         if (typeFilter == 1) {
             sql = """
-                SELECT d.*, s.type AS actuator_type
+                SELECT d.*, s.type AS type
                 FROM device AS d
                 JOIN gpio AS g ON d.gpio_pinNum = g.pinNum
                 JOIN sensor AS s ON g.sensor_gpioId = s.id

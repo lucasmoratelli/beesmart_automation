@@ -35,26 +35,31 @@ public class DeviceController {
     }
 
     @GetMapping("/toggle/{id}")
-    public boolean toggleAndLog(@PathVariable int id) {
-        int gpio = log(id, 0).gpio;
+    public boolean getToggle(@PathVariable int id) {
+        int gpio = toggleAndLog(id, 0).gpio;
         getOutPin(gpio).toggle();
 
         return getOutPin(gpio).isHigh();
     }
 
-    public DeviceDTO log(int id, int type) {
+    public DeviceDTO toggleAndLog(int id, int type) {
         DeviceDAO deviceDAO = new DeviceDAO();
         DeviceConverter deviceConverter = new DeviceConverter();
         DeviceDTO device = deviceConverter.toDTO(deviceDAO.getActuatorById(id, type));
-        var pinState = getOutPin(device.gpio).getState();
-        int value;
-        if (pinState.isHigh()){
-            value = 1;
-        } else {
-            value = 0;
+        if (device.type == 0) {
+            var pinState = getOutPin(device.gpio).getState();
+            int value;
+            if (pinState.isHigh()){
+                value = 1;
+            } else {
+                value = 0;
+            }
+            deviceDAO.addLog(id, device.type, value);
+        }else {
+            deviceDAO.addLog(id, device.type, 1);
         }
-        deviceDAO.addLog(id, device.type, value);
         return device;
+
     }
     public GpioPinDigitalOutput getOutPin(int pinNum) {
         if (out[15] == null) {
@@ -94,37 +99,37 @@ public class DeviceController {
             in[2] = gpioPi.provisionDigitalInputPin(RaspiPin.GPIO_02);
         }
         in[8].addListener((GpioPinListenerDigital) event -> {
-            log(5, 1);
+            toggleAndLog(5, 1);
 
             if (in[8].isHigh()) {
-                log(1, 0);
+                toggleAndLog(1, 0);
                 System.out.println("pressed");
             }
         });
         in[9].addListener((GpioPinListenerDigital) event -> {
-            log(6, 1);
+            toggleAndLog(6, 1);
 
             // display pin state on console
             if (in[9].isHigh()) {
-                log(2, 0);
+                toggleAndLog(2, 0);
                 System.out.println("pressed");
             }
         });
         in[0].addListener((GpioPinListenerDigital) event -> {
-            log(7, 1);
+            toggleAndLog(7, 1);
 
             // display pin state on console
             if (in[0].isHigh()) {
-                log(3, 0);
+                toggleAndLog(3, 0);
                 System.out.println("pressed");
             }
         });
         in[2].addListener((GpioPinListenerDigital) event -> {
-            log(8, 1);
+            toggleAndLog(8, 1);
 
             // display pin state on console
             if (in[2].isHigh()) {
-                log(4, 0);
+                toggleAndLog(4, 0);
                 System.out.println("pressed");
             }
         });
