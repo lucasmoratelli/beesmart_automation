@@ -4,6 +4,7 @@ import com.pi.beesmart.model.device.DeviceDAO;
 import com.pi.beesmart.model.device.DeviceEntity;
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,11 +15,14 @@ import java.util.List;
 public class DeviceController {
     private static final GpioPinDigitalOutput[] out = new GpioPinDigitalOutput[31];
     private static final GpioPinDigitalInput[] in = new GpioPinDigitalInput[31];
+    @Autowired
+    public DeviceDAO deviceDAO;
+    @Autowired
+    public DeviceConverter deviceConverter;
 
 
     @GetMapping("/actuator/")
     public List<DeviceDTO> getOutput() {
-        DeviceDAO deviceDAO = new DeviceDAO();
         List<DeviceEntity> devices = deviceDAO.getAllActuators();
         for (DeviceEntity device : devices) {
             if (getOutPin(device.gpio).isHigh()) {
@@ -27,7 +31,7 @@ public class DeviceController {
                 device.value = 0;
             }
         }
-        return new DeviceConverter().toDTO(devices);
+        return deviceConverter.toDTO(devices);
     }
     @GetMapping("/")
     public String hello() {
@@ -42,8 +46,6 @@ public class DeviceController {
     }
 
     public DeviceDTO toggleAndLog(int id, int type) {
-        DeviceDAO deviceDAO = new DeviceDAO();
-        DeviceConverter deviceConverter = new DeviceConverter();
         DeviceDTO device = deviceConverter.toDTO(deviceDAO.getActuatorById(id, type));
         System.out.println(device.gpio);
         System.out.println(device.name);

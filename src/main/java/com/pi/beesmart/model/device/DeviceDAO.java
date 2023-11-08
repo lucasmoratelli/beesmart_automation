@@ -1,12 +1,13 @@
 package com.pi.beesmart.model.device;
 
 import com.pi.beesmart.ConnectionSingleton;
+import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-
+@Component
 public class DeviceDAO {
 
     public List<DeviceEntity> getAllActuators() {

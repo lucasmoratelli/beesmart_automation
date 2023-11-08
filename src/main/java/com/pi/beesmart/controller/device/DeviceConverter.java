@@ -1,10 +1,11 @@
 package com.pi.beesmart.controller.device;
 
 import com.pi.beesmart.model.device.DeviceEntity;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Component
 public class DeviceConverter {
     public List<DeviceDTO> toDTO(List<DeviceEntity> entities) {
 
