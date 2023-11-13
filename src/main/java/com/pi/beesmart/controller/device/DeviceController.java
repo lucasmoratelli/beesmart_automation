@@ -40,12 +40,12 @@ public class DeviceController {
 
     @GetMapping("/toggle/{id}")
     public boolean getToggle(@PathVariable int id) {
-        int gpio = toggleAndLog(id, 0).gpio;
+        int gpio = toggleState(id, 0).gpio;
 
         return getOutPin(gpio).isHigh();
     }
 
-    public DeviceDTO toggleAndLog(int id, int type) {
+    public DeviceDTO toggleState(int id, int type) {
         DeviceDTO device = deviceConverter.toDTO(deviceDAO.getActuatorById(id, type));
         System.out.println(device.gpio);
         System.out.println(device.name);
@@ -63,7 +63,25 @@ public class DeviceController {
             deviceDAO.addLog(id, type, 1);
         }
         return device;
-
+    }
+    public DeviceDTO setState(int id, int type, boolean state) {
+        DeviceDTO device = deviceConverter.toDTO(deviceDAO.getActuatorById(id, type));
+        System.out.println(device.gpio);
+        System.out.println(device.name);
+        if (type == 0) {
+            getOutPin(device.gpio).setState(state);
+            int value;
+            if (state){
+                value = 1;
+            } else {
+                value = 0;
+            }
+            deviceDAO.addLog(id, device.type, value);
+        }else {
+            //Future Implementation
+            deviceDAO.addLog(id, type, 1);
+        }
+        return device;
     }
     public GpioPinDigitalOutput getOutPin(int pinNum) {
         if (out[15] == null) {
@@ -106,8 +124,8 @@ public class DeviceController {
 
             if (in[8].isHigh()) {
 
-                toggleAndLog(5, 1);
-                toggleAndLog(1, 0);
+                toggleState(5, 1);
+                toggleState(1, 0);
                 System.out.println("pressed");
             }
         });
@@ -115,8 +133,8 @@ public class DeviceController {
 
             // display pin state on console
             if (in[9].isHigh()) {
-                toggleAndLog(6, 1);
-                toggleAndLog(2, 0);
+                toggleState(6, 1);
+                toggleState(2, 0);
                 System.out.println("pressed");
             }
         });
@@ -124,8 +142,8 @@ public class DeviceController {
 
             // display pin state on console
             if (in[0].isHigh()) {
-                toggleAndLog(7, 1);
-                toggleAndLog(3, 0);
+                toggleState(7, 1);
+                toggleState(3, 0);
                 System.out.println("pressed");
             }
         });
@@ -133,8 +151,8 @@ public class DeviceController {
 
             // display pin state on console
             if (in[2].isHigh()) {
-                toggleAndLog(8, 1);
-                toggleAndLog(4, 0);
+                toggleState(8, 1);
+                toggleState(4, 0);
                 System.out.println("pressed");
             }
         });
