@@ -10,29 +10,40 @@ import java.util.List;
 
 public class RoutineDAO {
 
-    public List<DeviceEntity> getAllRoutines() {
+    public List<RoutineEntity> getAllRoutines() {
         final String sql = """
-                SELECT d.*, a.type AS actuator_type
-                FROM device AS d
-                JOIN gpio AS g ON d.gpio_pinNum = g.pinNum
-                JOIN actuator AS a ON g.actuator_gpioId = a.id
-                WHERE g.type = 0;""";
+                SELECT
+                r.id AS id,
+                r.name AS name,
+                r.value AS value,
+                r.comparationType AS comparation,
+                r.action AS action,
+                GROUP_CONCAT(DISTINCT CASE WHEN g.type = 1 THEN d.id END) AS sensor,
+                GROUP_CONCAT(DISTINCT CASE WHEN g.type = 0 THEN d.id END) AS actuator
+                FROM BeeSmart.routine AS r
+                LEFT JOIN BeeSmart.devicesOfRoutine AS dor ON r.id = dor.routine_id
+                LEFT JOIN BeeSmart.device AS d ON dor.device_id = d.id
+                LEFT JOIN BeeSmart.gpio AS g ON d.gpio_pinNum = g.pinNum
+                GROUP BY r.id, r.name, r.value, r.comparationType, r.action;""";
         try (final PreparedStatement preparedStatement = ConnectionSingleton.getConnection().prepareStatement(sql); //
-             final ResultSet resultadoOutputs = preparedStatement.executeQuery()) {
+             final ResultSet resultado = preparedStatement.executeQuery()) {
 
-            List<DeviceEntity> resultadoComTodosOutputs = new ArrayList<>();
+            List<RoutineEntity> resultadoComTodasRotinas = new ArrayList<>();
 
-            while (resultadoOutputs.next()) {
-                int id = resultadoOutputs.getInt("id");
-                int gpio = resultadoOutputs.getInt("gpio_pinNum");
-                String name = resultadoOutputs.getString("name");
-                int type = resultadoOutputs.getInt("actuator_type");
+            while (resultado.next()) {
+                int id = resultado.getInt("id");
+                String name = resultado.getString("name");
+                int value = resultado.getInt("value");
+                int comparation = resultado.getInt("comparation");
+                int action = resultado.getInt("action");
+                int sensor = resultado.getInt("sensor");
+                int actuator = resultado.getInt("actuator");
 
-                DeviceEntity outputQueAcabeiDeObterDoBanco = new DeviceEntity(id, gpio, name, type, 0);
-                resultadoComTodosOutputs.add(outputQueAcabeiDeObterDoBanco);
+                RoutineEntity rotinaQueAcabeiDeObterDoBanco = new RoutineEntity(id, name, value, comparation, action, sensor, actuator);
+                resultadoComTodasRotinas.add(rotinaQueAcabeiDeObterDoBanco);
             }
 
-            return resultadoComTodosOutputs;
+            return resultadoComTodasRotinas;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
