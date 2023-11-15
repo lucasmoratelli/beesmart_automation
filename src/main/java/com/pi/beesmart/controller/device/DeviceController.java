@@ -3,12 +3,12 @@ package com.pi.beesmart.controller.device;
 import com.pi.beesmart.model.device.DeviceDAO;
 import com.pi.beesmart.model.device.DeviceEntity;
 import com.pi4j.io.gpio.*;
-import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Component
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/")
@@ -20,7 +20,7 @@ public class DeviceController {
     @Autowired
     public DeviceConverter deviceConverter;
 
-
+    //ACTUATOR PART...
     @GetMapping("/actuator/")
     public List<DeviceDTO> getOutput() {
         List<DeviceEntity> devices = deviceDAO.getAllActuators();
@@ -46,7 +46,7 @@ public class DeviceController {
     }
 
     public DeviceDTO toggleState(int id, int type) {
-        DeviceDTO device = deviceConverter.toDTO(deviceDAO.getActuatorById(id, type));
+        DeviceDTO device = deviceConverter.toDTO(deviceDAO.getDeviceById(id, type));
         System.out.println(device.gpio);
         System.out.println(device.name);
         if (type == 0) {
@@ -60,12 +60,13 @@ public class DeviceController {
             }
             deviceDAO.addLog(id, device.type, value);
         }else {
+            //Future Implementation
             deviceDAO.addLog(id, type, 1);
         }
         return device;
     }
     public DeviceDTO setState(int id, int type, boolean state) {
-        DeviceDTO device = deviceConverter.toDTO(deviceDAO.getActuatorById(id, type));
+        DeviceDTO device = deviceConverter.toDTO(deviceDAO.getDeviceById(id, type));
         System.out.println(device.gpio);
         System.out.println(device.name);
         if (type == 0) {
@@ -103,7 +104,7 @@ public class DeviceController {
 
         return out[pinNum];
     }
-    public void getInPin() {
+    public GpioPinDigitalInput getInPin(int pinNum) {
         if (in[8] == null) {
             GpioController gpioPi = GpioFactory.getInstance();
             in[8] = gpioPi.provisionDigitalInputPin(RaspiPin.GPIO_08);
@@ -120,41 +121,6 @@ public class DeviceController {
             GpioController gpioPi = GpioFactory.getInstance();
             in[2] = gpioPi.provisionDigitalInputPin(RaspiPin.GPIO_02);
         }
-        in[8].addListener((GpioPinListenerDigital) event -> {
-
-            if (in[8].isHigh()) {
-
-                toggleState(5, 1);
-                toggleState(1, 0);
-                System.out.println("pressed");
-            }
-        });
-        in[9].addListener((GpioPinListenerDigital) event -> {
-
-            // display pin state on console
-            if (in[9].isHigh()) {
-                toggleState(6, 1);
-                toggleState(2, 0);
-                System.out.println("pressed");
-            }
-        });
-        in[0].addListener((GpioPinListenerDigital) event -> {
-
-            // display pin state on console
-            if (in[0].isHigh()) {
-                toggleState(7, 1);
-                toggleState(3, 0);
-                System.out.println("pressed");
-            }
-        });
-        in[2].addListener((GpioPinListenerDigital) event -> {
-
-            // display pin state on console
-            if (in[2].isHigh()) {
-                toggleState(8, 1);
-                toggleState(4, 0);
-                System.out.println("pressed");
-            }
-        });
+        return in[pinNum];
     }
 }

@@ -38,11 +38,10 @@ public class DeviceDAO {
         }
     }
 
-    public DeviceEntity getActuatorById(int idFilter, int typeFilter) {
+    public DeviceEntity getDeviceById(int idFilter, int typeFilter) {
         String sql = getSql(typeFilter);
         try (final PreparedStatement preparedStatement = ConnectionSingleton.getConnection().prepareStatement(sql)) {
-            preparedStatement.setInt(1, typeFilter);
-            preparedStatement.setInt(2, idFilter);
+            preparedStatement.setInt(1, idFilter);
 
             try (final ResultSet resultadoOutputs = preparedStatement.executeQuery()) {
 
@@ -69,14 +68,14 @@ public class DeviceDAO {
             FROM device AS d
             JOIN gpio AS g ON d.gpio_pinNum = g.pinNum
             JOIN actuator AS a ON g.actuator_gpioId = a.id
-            WHERE g.type = ? AND d.id = ?;""";
+            WHERE g.type = 0 AND d.id = ?;""";
         if (typeFilter == 1) {
             sql = """
                 SELECT d.*, s.type AS type
                 FROM device AS d
                 JOIN gpio AS g ON d.gpio_pinNum = g.pinNum
                 JOIN sensor AS s ON g.sensor_gpioId = s.id
-                WHERE g.type = ? AND d.id = ?;""";
+                WHERE g.type = 1 AND d.id = ?;""";
 
         }
         return sql;
