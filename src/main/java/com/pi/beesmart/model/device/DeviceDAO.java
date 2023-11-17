@@ -1,6 +1,7 @@
 package com.pi.beesmart.model.device;
 
 import com.pi.beesmart.ConnectionSingleton;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 @Component
 public class DeviceDAO {
+    @Autowired
+    public ConnectionSingleton connectionSingleton;
 
     public List<DeviceEntity> getAllActuators() {
         final String sql = """
@@ -17,7 +20,7 @@ public class DeviceDAO {
                 JOIN gpio AS g ON d.gpio_pinNum = g.pinNum
                 JOIN actuator AS a ON g.actuator_gpioId = a.id
                 WHERE g.type = 0;""";
-        try (final PreparedStatement preparedStatement = ConnectionSingleton.getConnection().prepareStatement(sql); //
+        try (final PreparedStatement preparedStatement = connectionSingleton.getConnection().prepareStatement(sql); //
                 final ResultSet resultadoOutputs = preparedStatement.executeQuery()) {
 
             List<DeviceEntity> resultadoComTodosOutputs = new ArrayList<>();
@@ -40,7 +43,7 @@ public class DeviceDAO {
 
     public DeviceEntity getDeviceById(int idFilter, int typeFilter) {
         String sql = getSql(typeFilter);
-        try (final PreparedStatement preparedStatement = ConnectionSingleton.getConnection().prepareStatement(sql)) {
+        try (final PreparedStatement preparedStatement = connectionSingleton.getConnection().prepareStatement(sql)) {
             preparedStatement.setInt(1, idFilter);
 
             try (final ResultSet resultadoOutputs = preparedStatement.executeQuery()) {
@@ -83,7 +86,7 @@ public class DeviceDAO {
 
     public void addLog(int id, int type, int value) {
         final String sql = "INSERT INTO log VALUES (null, ?, ?, ?, now(), now())";
-        try (final PreparedStatement preparedStatement = ConnectionSingleton.getConnection().prepareStatement(sql)) {
+        try (final PreparedStatement preparedStatement = connectionSingleton.getConnection().prepareStatement(sql)) {
             preparedStatement.setInt(1, id);
             preparedStatement.setInt(2, type);
             preparedStatement.setInt(3, value);

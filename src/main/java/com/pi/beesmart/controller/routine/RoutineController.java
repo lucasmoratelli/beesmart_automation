@@ -17,15 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-@Component
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/")
 public class RoutineController {
-
-    @Autowired
-    public RoutineDAO routineDAO;
-
     @Autowired
     public RoutineConverter routineConverter;
 
@@ -37,10 +32,12 @@ public class RoutineController {
 
     @GetMapping("/Routines/")
     public List<RoutineDTO> getRoutines() {
+        RoutineDAO routineDAO = new RoutineDAO();
         List<RoutineEntity> routines = routineDAO.getAllRoutines();
         return routineConverter.toDTO(routines);
     }
     public void executeRoutine() throws InterruptedException {
+        RoutineDAO routineDAO = new RoutineDAO();
         List<RoutineEntity> routines = routineDAO.getAllRoutines();
         Date dataHoraAtual = new Date();
         String hora = new SimpleDateFormat("HH:mm:ss").format(dataHoraAtual);
