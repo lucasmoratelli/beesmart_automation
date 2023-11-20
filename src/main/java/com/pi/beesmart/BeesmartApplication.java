@@ -7,6 +7,5 @@ public class BeesmartApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BeesmartApplication.class, args);
-
 	}
 }

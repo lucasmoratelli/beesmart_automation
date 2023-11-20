@@ -19,9 +19,9 @@ public class ConnectionSingleton {
     public Connection getConnection() throws SQLException {
 
         if (connection == null) {
-            connection = DriverManager.getConnection( "jdbc:mariadb://localhost:3310/beesmart", //
+            connection = DriverManager.getConnection( "jdbc:mariadb://localhost:3306/beesmart", //
                     "root", //
-                    "Cedup");
+                    "beesmart");
         }
 
         return connection;
