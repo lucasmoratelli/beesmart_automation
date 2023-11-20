@@ -23,10 +23,10 @@ public class RoutineDAO {
                 r.action AS action,
                 GROUP_CONCAT(DISTINCT CASE WHEN g.type = 1 THEN d.id END) AS sensor,
                 GROUP_CONCAT(DISTINCT CASE WHEN g.type = 0 THEN d.id END) AS actuator
-                FROM BeeSmart.routine AS r
-                LEFT JOIN BeeSmart.devicesOfRoutine AS dor ON r.id = dor.routine_id
-                LEFT JOIN BeeSmart.device AS d ON dor.device_id = d.id
-                LEFT JOIN BeeSmart.gpio AS g ON d.gpio_pinNum = g.pinNum
+                FROM routine AS r
+                LEFT JOIN devicesOfRoutine AS dor ON r.id = dor.routine_id
+                LEFT JOIN device AS d ON dor.device_id = d.id
+                LEFT JOIN gpio AS g ON d.gpio_pinNum = g.pinNum
                 GROUP BY r.id, r.name, r.time, r.comparationType, r.action;""";
         try (final PreparedStatement preparedStatement = connectionSingleton.getConnection().prepareStatement(sql); //
              final ResultSet resultado = preparedStatement.executeQuery()) {
