@@ -24,7 +24,7 @@ public class RoutineDAO {
                 GROUP_CONCAT(DISTINCT CASE WHEN g.type = 1 THEN d.id END) AS sensor,
                 GROUP_CONCAT(DISTINCT CASE WHEN g.type = 0 THEN d.id END) AS actuator
                 FROM routine AS r
-                LEFT JOIN devicesOfRoutine AS dor ON r.id = dor.routine_id
+                LEFT JOIN devicesofroutine AS dor ON r.id = dor.routine_id
                 LEFT JOIN device AS d ON dor.device_id = d.id
                 LEFT JOIN gpio AS g ON d.gpio_pinNum = g.pinNum
                 GROUP BY r.id, r.name, r.time, r.comparationType, r.action;""";
