@@ -7,7 +7,10 @@ import com.pi.beesmart.model.routine.RoutineDAO;
 import com.pi.beesmart.model.routine.RoutineEntity;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import jdk.jfr.Frequency;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,12 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+@Component
+@EnableScheduling
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/")
 public class RoutineController {
     @Autowired
     public RoutineConverter routineConverter;
+
+    @Autowired
+    public RoutineDAO routineDAO;
 
     @Autowired
     public DeviceDAO deviceDAO;
@@ -36,8 +44,9 @@ public class RoutineController {
         List<RoutineEntity> routines = routineDAO.getAllRoutines();
         return routineConverter.toDTO(routines);
     }
+
+    @Scheduled(fixedDelay = 100)
     public void executeRoutine() throws InterruptedException {
-        RoutineDAO routineDAO = new RoutineDAO();
         List<RoutineEntity> routines = routineDAO.getAllRoutines();
         Date dataHoraAtual = new Date();
         String hora = new SimpleDateFormat("HH:mm:ss").format(dataHoraAtual);

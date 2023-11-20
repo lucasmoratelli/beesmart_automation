@@ -20,4 +20,8 @@ public class RoutineEntity {
         this.sensorId = sensorId;
         this.actuatorId = actuatorId;
     }
+
+    public RoutineEntity() {
+
+    }
 }

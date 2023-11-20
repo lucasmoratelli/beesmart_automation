@@ -10,14 +10,20 @@ import java.sql.SQLException;
 @Scope("singleton")
 public class ConnectionSingleton {
 
-    private static Connection connection;
+    private Connection connection;
 
+    /**
+     * Obtém a conexão ativa com o banco.
+     * Caso não exista nenhuma conexão ativa ainda, cria uma nova.
+     */
     public Connection getConnection() throws SQLException {
+
         if (connection == null) {
-            connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/beesmart", //
+            connection = DriverManager.getConnection( "jdbc:mariadb://localhost:3310/beesmart", //
                     "root", //
-                    "beesmart");
+                    "Cedup");
         }
+
         return connection;
     }
 }
