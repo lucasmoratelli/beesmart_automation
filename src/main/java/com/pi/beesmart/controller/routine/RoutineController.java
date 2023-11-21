@@ -54,10 +54,8 @@ public class RoutineController {
         while (true) {
             for (RoutineEntity routine : routines) {
 
-                GpioPinDigitalInput sensorGpio = deviceController.getInPin(deviceDAO.getDeviceById(routine.sensorId, 1).gpio);
-
-                if (routine.type == 0) {
-
+                if (routine.type == 1) {
+                    GpioPinDigitalInput sensorGpio = deviceController.getInPin(deviceDAO.getDeviceById(routine.sensorId, 1).gpio);
                     sensorGpio.addListener((GpioPinListenerDigital) event -> {
 
                         if (sensorGpio.isHigh()) {
@@ -69,7 +67,7 @@ public class RoutineController {
 
                     });
 
-                } else if (routine.type == 1) {
+                } else if (routine.type == 0) {
                     if (hora.equals(routine.time)) {
                         if (routine.action == 0) {
 
