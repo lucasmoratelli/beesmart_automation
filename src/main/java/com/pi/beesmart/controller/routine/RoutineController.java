@@ -46,12 +46,12 @@ public class RoutineController {
     }
 
     @Scheduled(fixedDelay = 100)
-    public void executeRoutine() throws InterruptedException {
-        List<RoutineEntity> routines = routineDAO.getAllRoutines();
-        Date dataHoraAtual = new Date();
-        String hora = new SimpleDateFormat("HH:mm:ss").format(dataHoraAtual);
+    public void executeRoutine() {
 
         while (true) {
+            List<RoutineEntity> routines = routineDAO.getAllRoutines();
+            Date dataHoraAtual = new Date();
+            String hora = new SimpleDateFormat("HH:mm:ss").format(dataHoraAtual);
             for (RoutineEntity routine : routines) {
 
                 if (routine.type == 1) {
@@ -82,7 +82,6 @@ public class RoutineController {
                     }
                 }
             }
-            wait(100);
         }
     }
 }
