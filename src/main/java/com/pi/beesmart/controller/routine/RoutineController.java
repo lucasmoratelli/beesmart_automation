@@ -80,21 +80,7 @@ public class RoutineController {
         }
 
         for (RoutineEntity routineEntity : routines) {
-
-            if (routineEntity.type == 1) {
-                GpioPinDigitalInput sensorGpio = deviceController.getInPin(deviceDAO.getDeviceById(routineEntity.sensorId, 1).gpio);
-                sensorGpio.addListener((GpioPinListenerDigital) event -> {
-
-                    if (sensorGpio.isHigh()) {
-
-                        deviceController.toggleState(routineEntity.sensorId, 1);
-                        deviceController.toggleState(routineEntity.actuatorId, 0);
-
-                    }
-
-                });
-
-            } else if (routineEntity.type == 0) {
+            if (routineEntity.type == 0) {
                 if (hora.equals(routineEntity.time)) {
                     if (routineEntity.action == 0) {
 
