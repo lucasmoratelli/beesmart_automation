@@ -45,43 +45,66 @@ public class RoutineController {
         return routineConverter.toDTO(routines);
     }
 
-    @Scheduled(fixedDelay = 100)
+    @Scheduled(fixedDelay = 1000)
     public void executeRoutine() {
 
-        while (true) {
-            List<RoutineEntity> routines = routineDAO.getAllRoutines();
-            Date dataHoraAtual = new Date();
-            String hora = new SimpleDateFormat("HH:mm:ss").format(dataHoraAtual);
-            for (RoutineEntity routine : routines) {
+        List<RoutineEntity> routines = routineDAO.getAllRoutines();
+        Date dataHoraAtual = new Date();
+        String hora = new SimpleDateFormat("HH:mm:ss").format(dataHoraAtual);
+        System.out.println("ROTINAS CADASTRADAS");
+        System.out.println("ID Rotina\tNome\tTipo\tID Sensor\tID Atuador\tAção\tComparação\tHoraAC\tHoraAT");
 
-                if (routine.type == 1) {
-                    GpioPinDigitalInput sensorGpio = deviceController.getInPin(deviceDAO.getDeviceById(routine.sensorId, 1).gpio);
-                    sensorGpio.addListener((GpioPinListenerDigital) event -> {
+        for (RoutineEntity routine2 : routines) {
+            System.out.println(routine2.id + "\t" + routine2.name + "\t" + routine2.type + "\t" + routine2.sensorId + "\t" + routine2.actuatorId + "\t" + routine2.action + "\t" + routine2.comparation + "\t" + routine2.time + "\t" + hora);
+        }
 
-                        if (sensorGpio.isHigh()) {
+        for (RoutineEntity routine : routines) {
 
-                            deviceController.toggleState(routine.sensorId, 1);
-                            deviceController.toggleState(routine.actuatorId, 0);
+            if (routine.type == 1) {
+                GpioPinDigitalInput sensorGpio = deviceController.getInPin(deviceDAO.getDeviceById(routine.sensorId, 1).gpio);
+                sensorGpio.addListener((GpioPinListenerDigital) event -> {
 
-                        }
+                    if (sensorGpio.isHigh()) {
 
-                    });
+                        deviceController.toggleState(routine.sensorId, 1);
+                        deviceController.toggleState(routine.actuatorId, 0);
 
-                } else if (routine.type == 0) {
-                    if (hora.equals(routine.time)) {
-                        if (routine.action == 0) {
+                    }
 
-                            deviceController.setState(routine.actuatorId, 0, false);
+                });
+            }
+        }
 
-                        }
-                        if (routine.action == 1) {
+        for (RoutineEntity routineEntity : routines) {
 
-                            deviceController.setState(routine.actuatorId, 0, true);
+            if (routineEntity.type == 1) {
+                GpioPinDigitalInput sensorGpio = deviceController.getInPin(deviceDAO.getDeviceById(routineEntity.sensorId, 1).gpio);
+                sensorGpio.addListener((GpioPinListenerDigital) event -> {
 
-                        }
+                    if (sensorGpio.isHigh()) {
+
+                        deviceController.toggleState(routineEntity.sensorId, 1);
+                        deviceController.toggleState(routineEntity.actuatorId, 0);
+
+                    }
+
+                });
+
+            } else if (routineEntity.type == 0) {
+                if (hora.equals(routineEntity.time)) {
+                    if (routineEntity.action == 0) {
+
+                        deviceController.setState(routineEntity.actuatorId, 0, false);
+
+                    }
+                    if (routineEntity.action == 1) {
+
+                        deviceController.setState(routineEntity.actuatorId, 0, true);
+
                     }
                 }
             }
         }
+
     }
 }
