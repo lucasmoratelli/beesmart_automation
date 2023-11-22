@@ -44,6 +44,7 @@ public class RoutineController {
         List<RoutineEntity> routines = routineDAO.getAllRoutines();
         return routineConverter.toDTO(routines);
     }
+    private int i = 0;
 
     @Scheduled(fixedDelay = 1000)
     public void executeRoutine() {
@@ -52,27 +53,29 @@ public class RoutineController {
         Date dataHoraAtual = new Date();
         String hora = new SimpleDateFormat("HH:mm:ss").format(dataHoraAtual);
         System.out.println("ROTINAS CADASTRADAS");
-        System.out.println("ID Rotina\tNome\tTipo\tID Sensor\tID Atuador\tAção\tComparação\tHoraAC\tHoraAT");
+        System.out.println("ID Rotina\tNome\t\tTipo\tID Sensor\tID Atuador\tAcao\tComparacao\tHoraAC\tHoraAT");
 
         for (RoutineEntity routine2 : routines) {
-            System.out.println(routine2.id + "\t" + routine2.name + "\t" + routine2.type + "\t" + routine2.sensorId + "\t" + routine2.actuatorId + "\t" + routine2.action + "\t" + routine2.comparation + "\t" + routine2.time + "\t" + hora);
+            System.out.println(routine2.id + "\t\t" + routine2.name + "\t" + routine2.type + "\t" + routine2.sensorId + "\t\t\t" + routine2.actuatorId + "\t\t\t" + routine2.action + "\t" + routine2.comparation + "\t" + routine2.time + "\t" + hora);
         }
+        if (i == 0) {
+            for (RoutineEntity routine : routines) {
 
-        for (RoutineEntity routine : routines) {
+                if (routine.type == 1) {
+                    GpioPinDigitalInput sensorGpio = deviceController.getInPin(deviceDAO.getDeviceById(routine.sensorId, 1).gpio);
+                    sensorGpio.addListener((GpioPinListenerDigital) event -> {
 
-            if (routine.type == 1) {
-                GpioPinDigitalInput sensorGpio = deviceController.getInPin(deviceDAO.getDeviceById(routine.sensorId, 1).gpio);
-                sensorGpio.addListener((GpioPinListenerDigital) event -> {
+                        if (sensorGpio.isHigh()) {
 
-                    if (sensorGpio.isHigh()) {
+                            deviceController.toggleState(routine.sensorId, 1);
+                            deviceController.toggleState(routine.actuatorId, 0);
 
-                        deviceController.toggleState(routine.sensorId, 1);
-                        deviceController.toggleState(routine.actuatorId, 0);
+                        }
 
-                    }
-
-                });
+                    });
+                }
             }
+            i = 1;
         }
 
         for (RoutineEntity routineEntity : routines) {
