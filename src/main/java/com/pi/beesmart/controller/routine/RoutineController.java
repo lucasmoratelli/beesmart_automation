@@ -56,8 +56,9 @@ public class RoutineController {
         System.out.println("ID Rotina\tNome\t\tTipo\tID Sensor\tID Atuador\tAcao\tComparacao\tHoraAC\tHoraAT");
 
         for (RoutineEntity routine2 : routines) {
-            System.out.println(routine2.id + "\t\t" + routine2.name + "\t" + routine2.type + "\t" + routine2.sensorId + "\t\t\t" + routine2.actuatorId + "\t\t\t" + routine2.action + "\t" + routine2.comparation + "\t" + routine2.time + "\t" + hora);
+            System.out.println(routine2.id + "\t\t" + routine2.name + "\t" + routine2.type + "\t" + routine2.sensorId + "\t\t" + routine2.actuatorId + "\t\t" + routine2.action + "\t" + routine2.comparation + "\t\t" + routine2.time + "\t" + hora);
         }
+        System.out.println(i);
         if (i == 0) {
             for (RoutineEntity routine : routines) {
 
