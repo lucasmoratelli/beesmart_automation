@@ -46,7 +46,7 @@ public class RoutineController {
     }
     private int i = 0;
 
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedRate = 1000)
     public void executeRoutine() {
 
         List<RoutineEntity> routines = routineDAO.getAllRoutines();
@@ -83,7 +83,8 @@ public class RoutineController {
             if (routineEntity.type == 0) {
                 if (hora.equals(routineEntity.time)) {
                     if (routineEntity.action == 0) {
-
+                        System.out.println();
+                        System.out.println(routineEntity.actuatorId);
                         deviceController.setState(routineEntity.actuatorId, 0, false);
 
                     }
@@ -95,6 +96,5 @@ public class RoutineController {
                 }
             }
         }
-
     }
 }
