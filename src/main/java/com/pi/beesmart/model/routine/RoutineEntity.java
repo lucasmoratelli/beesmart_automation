@@ -7,10 +7,10 @@ public class RoutineEntity {
     public String time;
     public int comparation;
     public int action;
-    public int sensorId;
-    public int actuatorId;
+    public Integer sensorId;
+    public Integer actuatorId;
 
-    public RoutineEntity(int id, int type, String name, String time, int comparation, int action, int sensorId, int actuatorId) {
+    public RoutineEntity(int id, int type, String name, String time, int comparation, int action, Integer sensorId, Integer actuatorId) {
         this.id = id;
         this.type = type;
         this.name = name;
