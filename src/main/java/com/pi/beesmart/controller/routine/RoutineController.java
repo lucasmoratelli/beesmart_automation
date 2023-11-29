@@ -46,6 +46,10 @@ public class RoutineController {
     public RoutineDTO postRoutine(@RequestBody RoutineDTO dto) {
 
         final RoutineConverter converter = routineConverter;
+
+        i = 0;
+        j = 1;
+
         return converter.toDTO(routineDAO.add(converter.toEntity(dto)));
     }
     @CrossOrigin(origins = "*")
@@ -59,6 +63,7 @@ public class RoutineController {
         return ResponseEntity.ok().body(routineConverter.toDTO(entity));
     }
     private int i = 0;
+    private int j = 0;
 
     @Scheduled(fixedRate = 1000)
     public void executeRoutine() {
@@ -73,11 +78,16 @@ public class RoutineController {
             System.out.println(routine2.id + "\t\t" + routine2.name + "\t" + routine2.type + "\t" + routine2.sensorId + "\t\t" + routine2.actuatorId + "\t\t" + routine2.action + "\t" + routine2.comparation + "\t\t" + routine2.time + "\t" + hora);
         }
         System.out.println(i);
+
         if (i == 0) {
             for (RoutineEntity routine : routines) {
 
                 if (routine.type == 1) {
                     GpioPinDigitalInput sensorGpio = deviceController.getInPin(deviceDAO.getDeviceById(routine.sensorId, 1).gpio);
+                    if (j == 1) {
+                        sensorGpio.removeAllListeners();
+                        j = 0;
+                    }
                     sensorGpio.addListener((GpioPinListenerDigital) event -> {
 
                         if (sensorGpio.isHigh()) {
