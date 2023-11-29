@@ -70,22 +70,32 @@ public class RoutineDAO {
             try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
                 rs.next();
                 entity.id = rs.getInt(1);
-                final String sqlInsertDevicesOfRoutine = """
+                final String sqlInsertSensorOfRoutine = """
                         -- Inserir um sensor associado à rotina
                         INSERT INTO devicesofroutine (routine_id, device_id)
                         VALUES (?, ?);
-                        -- Inserir um atuador associado à rotina
-                        INSERT INTO devicesofroutine (routine_id, device_id)
-                        VALUES (?, ?);
                         """;
-                try (final PreparedStatement preparedStatement2 = connectionSingleton.getConnection().prepareStatement(sqlInsertDevicesOfRoutine)) {
+                try (final PreparedStatement preparedStatement2 = connectionSingleton.getConnection().prepareStatement(sqlInsertSensorOfRoutine)) {
                     preparedStatement2.setInt(1, entity.id);
                     preparedStatement2.setInt(2, entity.sensorId);
                     preparedStatement2.setInt(3, entity.id);
                     preparedStatement2.setInt(4, entity.actuatorId);
                     preparedStatement2.executeUpdate();
 
-                    return entity;
+                    final String sqlInsertActuatorOfRoutine = """
+                        -- Inserir um atuador associado à rotina
+                                                  INSERT INTO devicesofroutine (routine_id, device_id)
+                                                  VALUES (?, ?);
+                        """;
+                    try (final PreparedStatement preparedStatement3 = connectionSingleton.getConnection().prepareStatement(sqlInsertActuatorOfRoutine)) {
+                        preparedStatement3.setInt(1, entity.id);
+                        preparedStatement3.setInt(2, entity.sensorId);
+                        preparedStatement3.setInt(3, entity.id);
+                        preparedStatement3.setInt(4, entity.actuatorId);
+                        preparedStatement3.executeUpdate();
+
+                        return entity;
+                    }
                 }
             }
         } catch (Exception e) {
