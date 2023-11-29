@@ -38,7 +38,6 @@ public class RoutineController {
     @CrossOrigin(origins = "*")
     @GetMapping("/Routines/")
     public List<RoutineDTO> getRoutines() {
-        RoutineDAO routineDAO = new RoutineDAO();
         List<RoutineEntity> routines = routineDAO.getAllRoutines();
         return routineConverter.toDTO(routines);
     }
