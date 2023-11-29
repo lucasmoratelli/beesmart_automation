@@ -20,8 +20,8 @@ import java.util.Date;
 import java.util.List;
 @Component
 @EnableScheduling
-@RestController
 @CrossOrigin(origins = "*")
+@RestController
 @RequestMapping("/")
 public class RoutineController {
     @Autowired

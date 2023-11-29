@@ -20,7 +20,6 @@ public class DeviceController {
     @Autowired
     public DeviceConverter deviceConverter;
 
-    //ACTUATOR PART...
     @GetMapping("/actuator/")
     public List<DeviceDTO> getOutput() {
         List<DeviceEntity> devices = deviceDAO.getAllActuators();
