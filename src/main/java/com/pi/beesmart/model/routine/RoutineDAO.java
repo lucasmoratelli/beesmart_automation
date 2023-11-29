@@ -70,27 +70,42 @@ public class RoutineDAO {
             try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
                 rs.next();
                 entity.id = rs.getInt(1);
-                final String sqlInsertSensorOfRoutine = """
-                        -- Inserir um sensor associado à rotina
-                        INSERT INTO devicesofroutine (routine_id, device_id)
-                        VALUES (?, ?);
-                        """;
-                try (final PreparedStatement preparedStatement2 = connectionSingleton.getConnection().prepareStatement(sqlInsertSensorOfRoutine)) {
+
+                final String sqlInsertActuatorOfRoutine = """
+                      -- Inserir um atuador associado à rotina
+                      INSERT INTO devicesofroutine (routine_id, device_id)
+                      VALUES (?, ?);
+                      """;
+                try (final PreparedStatement preparedStatement2 = connectionSingleton.getConnection().prepareStatement(sqlInsertActuatorOfRoutine)) {
                     preparedStatement2.setInt(1, entity.id);
-                    preparedStatement2.setInt(2, entity.sensorId);
+                    preparedStatement2.setInt(2, entity.actuatorId);
                     preparedStatement2.executeUpdate();
 
-                    final String sqlInsertActuatorOfRoutine = """
-                        -- Inserir um atuador associado à rotina
-                                                  INSERT INTO devicesofroutine (routine_id, device_id)
-                                                  VALUES (?, ?);
-                        """;
-                    try (final PreparedStatement preparedStatement3 = connectionSingleton.getConnection().prepareStatement(sqlInsertActuatorOfRoutine)) {
-                        preparedStatement3.setInt(1, entity.id);
-                        preparedStatement3.setInt(2, entity.actuatorId);
-                        preparedStatement3.executeUpdate();
+                    if (entity.sensorId != null) {
+                        final String sqlInsertSensorOfRoutine = """
+                                -- Inserir um sensor associado à rotina
+                                INSERT INTO devicesofroutine (routine_id, device_id)
+                                VALUES (?, ?);
+                                """;
+                        try (final PreparedStatement preparedStatement3 = connectionSingleton.getConnection().prepareStatement(sqlInsertSensorOfRoutine)) {
+                            preparedStatement3.setInt(1, entity.id);
+                            preparedStatement3.setInt(2, entity.sensorId);
+                            preparedStatement3.executeUpdate();
 
-                        return entity;
+                            return entity;
+                        }
+                    } else {
+                        final String sqlInsertSensorOfRoutine = """
+                                -- Inserir um sensor associado à rotina
+                                INSERT INTO devicesofroutine (routine_id)
+                                VALUES (?);
+                                """;
+                        try (final PreparedStatement preparedStatement3 = connectionSingleton.getConnection().prepareStatement(sqlInsertSensorOfRoutine)) {
+                            preparedStatement3.setInt(1, entity.id);
+                            preparedStatement3.executeUpdate();
+
+                            return entity;
+                        }
                     }
                 }
             }
