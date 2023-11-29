@@ -107,10 +107,10 @@ public class RoutineDAO {
 
         final String sql1 = "DELETE FROM routine WHERE id = ?";
         final String sql2 = "DELETE FROM devicesofroutine WHERE routine_id = ?;";
-        try (final PreparedStatement preparedStatement1 = connectionSingleton.getConnection().prepareStatement(sql1)) {
+        try (final PreparedStatement preparedStatement1 = connectionSingleton.getConnection().prepareStatement(sql2)) {
             preparedStatement1.setInt(1, id);
             preparedStatement1.executeUpdate();
-            try (final PreparedStatement preparedStatement2 = connectionSingleton.getConnection().prepareStatement(sql2)) {
+            try (final PreparedStatement preparedStatement2 = connectionSingleton.getConnection().prepareStatement(sql1)) {
                 preparedStatement2.setInt(1, id);
                 preparedStatement2.executeUpdate();
                 return rotinaASerApagada;
