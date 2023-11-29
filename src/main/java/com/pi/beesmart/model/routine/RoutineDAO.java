@@ -78,8 +78,6 @@ public class RoutineDAO {
                 try (final PreparedStatement preparedStatement2 = connectionSingleton.getConnection().prepareStatement(sqlInsertSensorOfRoutine)) {
                     preparedStatement2.setInt(1, entity.id);
                     preparedStatement2.setInt(2, entity.sensorId);
-                    preparedStatement2.setInt(3, entity.id);
-                    preparedStatement2.setInt(4, entity.actuatorId);
                     preparedStatement2.executeUpdate();
 
                     final String sqlInsertActuatorOfRoutine = """
@@ -89,9 +87,7 @@ public class RoutineDAO {
                         """;
                     try (final PreparedStatement preparedStatement3 = connectionSingleton.getConnection().prepareStatement(sqlInsertActuatorOfRoutine)) {
                         preparedStatement3.setInt(1, entity.id);
-                        preparedStatement3.setInt(2, entity.sensorId);
-                        preparedStatement3.setInt(3, entity.id);
-                        preparedStatement3.setInt(4, entity.actuatorId);
+                        preparedStatement3.setInt(2, entity.actuatorId);
                         preparedStatement3.executeUpdate();
 
                         return entity;
