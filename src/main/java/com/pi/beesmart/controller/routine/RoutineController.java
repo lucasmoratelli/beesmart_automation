@@ -35,21 +35,21 @@ public class RoutineController {
 
     @Autowired
     public DeviceController deviceController;
-
+    @CrossOrigin(origins = "*")
     @GetMapping("/Routines/")
     public List<RoutineDTO> getRoutines() {
         RoutineDAO routineDAO = new RoutineDAO();
         List<RoutineEntity> routines = routineDAO.getAllRoutines();
         return routineConverter.toDTO(routines);
     }
-
+    @CrossOrigin(origins = "*")
     @PostMapping("/Routines/")
     public RoutineDTO postRoutine(@RequestBody RoutineDTO dto) {
 
         final RoutineConverter converter = routineConverter;
         return converter.toDTO(routineDAO.add(converter.toEntity(dto)));
     }
-
+    @CrossOrigin(origins = "*")
     @DeleteMapping("/Routines/{id}")
     public ResponseEntity<RoutineDTO> deletePessoa(@PathVariable int id) {
         RoutineEntity entity = routineDAO.delete(id);
