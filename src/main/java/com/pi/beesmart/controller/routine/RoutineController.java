@@ -9,13 +9,11 @@ import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import jdk.jfr.Frequency;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -43,6 +41,23 @@ public class RoutineController {
         RoutineDAO routineDAO = new RoutineDAO();
         List<RoutineEntity> routines = routineDAO.getAllRoutines();
         return routineConverter.toDTO(routines);
+    }
+
+    @PostMapping("/Routines/")
+    public RoutineDTO postRoutine(@RequestBody RoutineDTO dto) {
+
+        final RoutineConverter converter = routineConverter;
+        return converter.toDTO(routineDAO.add(converter.toEntity(dto)));
+    }
+
+    @DeleteMapping("/Routines/{id}")
+    public ResponseEntity<RoutineDTO> deletePessoa(@PathVariable int id) {
+        RoutineEntity entity = routineDAO.delete(id);
+
+        if (entity == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(routineConverter.toDTO(entity));
     }
     private int i = 0;
 
