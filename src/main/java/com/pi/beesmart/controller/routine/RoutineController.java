@@ -56,7 +56,8 @@ public class RoutineController {
     @DeleteMapping("/Routines/{id}")
     public ResponseEntity<RoutineDTO> deletePessoa(@PathVariable int id) {
         RoutineEntity entity = routineDAO.delete(id);
-
+        i = 0;
+        j = 1;
         if (entity == null){
             return ResponseEntity.notFound().build();
         }
