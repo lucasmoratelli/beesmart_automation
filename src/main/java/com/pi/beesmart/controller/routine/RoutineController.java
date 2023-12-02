@@ -35,6 +35,10 @@ public class RoutineController {
 
     @Autowired
     public DeviceController deviceController;
+
+    private int i = 0;
+    private int j = 0;
+
     @CrossOrigin(origins = "*")
     @GetMapping("/Routines/")
     public List<RoutineDTO> getRoutines() {
@@ -44,11 +48,12 @@ public class RoutineController {
     @CrossOrigin(origins = "*")
     @PostMapping("/Routines/")
     public RoutineDTO postRoutine(@RequestBody RoutineDTO dto) {
+        RoutineEntity routinePostada = routineDAO.add(routineConverter.toEntity(dto));
 
         i = 0;
         j = 1;
 
-        return routineConverter.toDTO(routineDAO.add(routineConverter.toEntity(dto)));
+        return routineConverter.toDTO(routinePostada);
     }
     @CrossOrigin(origins = "*")
     @DeleteMapping("/Routines/{id}")
@@ -62,8 +67,6 @@ public class RoutineController {
         }
         return ResponseEntity.ok().body(routineConverter.toDTO(entity));
     }
-    private int i = 0;
-    private int j = 0;
 
     @Scheduled(fixedRate = 1000)
     public void executeRoutine() {
