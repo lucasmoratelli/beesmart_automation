@@ -147,7 +147,7 @@ public class RoutineDAO {
                 LEFT JOIN devicesofroutine AS dor ON r.id = dor.routine_id
                 LEFT JOIN device AS d ON dor.device_id = d.id
                 LEFT JOIN gpio AS g ON d.gpio_pinNum = g.pinNum
-                WHERE r.id = 1
+                WHERE r.id = ?
                 GROUP BY r.id, r.name, r.time, r.comparationType, r.action;""";
         try (final PreparedStatement preparedStatement = connectionSingleton.getConnection().prepareStatement(sql)) {
             preparedStatement.setInt(1, idFilter);

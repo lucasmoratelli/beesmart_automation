@@ -45,12 +45,10 @@ public class RoutineController {
     @PostMapping("/Routines/")
     public RoutineDTO postRoutine(@RequestBody RoutineDTO dto) {
 
-        final RoutineConverter converter = routineConverter;
-
         i = 0;
         j = 1;
 
-        return converter.toDTO(routineDAO.add(converter.toEntity(dto)));
+        return routineConverter.toDTO(routineDAO.add(routineConverter.toEntity(dto)));
     }
     @CrossOrigin(origins = "*")
     @DeleteMapping("/Routines/{id}")
@@ -58,6 +56,7 @@ public class RoutineController {
         RoutineEntity entity = routineDAO.delete(id);
         i = 0;
         j = 1;
+
         if (entity == null){
             return ResponseEntity.notFound().build();
         }
