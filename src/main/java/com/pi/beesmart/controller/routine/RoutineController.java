@@ -6,6 +6,7 @@ import com.pi.beesmart.model.device.DeviceDAO;
 import com.pi.beesmart.model.routine.RoutineDAO;
 import com.pi.beesmart.model.routine.RoutineEntity;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import jdk.jfr.Frequency;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.http.WebSocket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -50,17 +52,12 @@ public class RoutineController {
     public RoutineDTO postRoutine(@RequestBody RoutineDTO dto) {
         RoutineEntity routinePostada = routineDAO.add(routineConverter.toEntity(dto));
 
-        i = 0;
-        j = 1;
-
         return routineConverter.toDTO(routinePostada);
     }
     @CrossOrigin(origins = "*")
     @DeleteMapping("/Routines/{id}")
     public ResponseEntity<RoutineDTO> deletePessoa(@PathVariable int id) {
         RoutineEntity entity = routineDAO.delete(id);
-        i = 0;
-        j = 1;
 
         if (entity == null){
             return ResponseEntity.notFound().build();
@@ -68,48 +65,18 @@ public class RoutineController {
         return ResponseEntity.ok().body(routineConverter.toDTO(entity));
     }
 
-    @Scheduled(fixedRate = 1000)
-    public void executeRoutine() {
-
+    //Método responsável por carregar as rotinas cadastradas no banco de dados para que possam ser executadas
+    @Scheduled(fixedDelay = 1000)
+    public void executeRoutineTime() {
         List<RoutineEntity> routines = routineDAO.getAllRoutines();
         Date dataHoraAtual = new Date();
         String hora = new SimpleDateFormat("HH:mm:ss").format(dataHoraAtual);
-        System.out.println("ROTINAS CADASTRADAS");
-        System.out.println("ID Rotina\tNome\t\tTipo\tID Sensor\tID Atuador\tAcao\tComparacao\tHoraAC\tHoraAT");
-
-        for (RoutineEntity routine2 : routines) {
-            System.out.println(routine2.id + "\t\t" + routine2.name + "\t" + routine2.type + "\t" + routine2.sensorId + "\t\t" + routine2.actuatorId + "\t\t" + routine2.action + "\t" + routine2.comparation + "\t\t" + routine2.time + "\t" + hora);
-        }
-        System.out.println(i);
-
-        if (i == 0) {
-            for (RoutineEntity routine : routines) {
-
-                if (routine.type == 1) {
-                    GpioPinDigitalInput sensorGpio = deviceController.getInPin(deviceDAO.getDeviceById(routine.sensorId, 1).gpio);
-                    if (j == 1) {
-                        sensorGpio.removeAllListeners();
-                        j = 0;
-                    }
-                    sensorGpio.addListener((GpioPinListenerDigital) event -> {
-
-                        if (sensorGpio.isHigh()) {
-
-                            deviceController.toggleState(routine.sensorId, 1);
-                            deviceController.toggleState(routine.actuatorId, 0);
-
-                        }
-
-                    });
-                }
-            }
-            i = 1;
-        }
 
         for (RoutineEntity routineEntity : routines) {
             if (routineEntity.type == 0) {
                 if (hora.equals(routineEntity.time)) {
                     if (routineEntity.action == 0) {
+
                         System.out.println();
                         System.out.println(routineEntity.actuatorId);
                         deviceController.setState(routineEntity.actuatorId, 0, false);
@@ -122,6 +89,74 @@ public class RoutineController {
                     }
                 }
             }
+        }
+    }
+
+    //Método responsável por executar as rotinas
+    @Scheduled(fixedRate = 5000)
+    public void executeRoutineONOFF() {
+
+        List<RoutineEntity> routines = routineDAO.getAllRoutines();
+
+        GpioPinDigitalInput interruptorSala = deviceController.getInPin(8);
+        GpioPinDigitalInput interruptorCozinha = deviceController.getInPin(9);
+        GpioPinDigitalInput interruptorSuite = deviceController.getInPin(0);
+        GpioPinDigitalInput interruptorHidro = deviceController.getInPin(2);
+
+        GpioPinListenerDigital listenerInterruptorSala = (GpioPinDigitalStateChangeEvent event) -> {
+            System.out.println(event.getState());
+            for (RoutineEntity routine : routines) {
+                if (routine.sensorId == 5) {
+                    if (interruptorSala.isHigh()) {
+                        deviceController.toggleState(routine.sensorId, 1);
+                        deviceController.toggleState(routine.actuatorId, 0);
+                    }
+                }
+            }
+        };
+
+        GpioPinListenerDigital listenerInterruptorCozinha = (GpioPinDigitalStateChangeEvent event) -> {
+            System.out.println(event.getState());
+            for (RoutineEntity routine : routines) {
+                if (routine.sensorId == 6) {
+                    if (interruptorCozinha.isHigh()){
+                        deviceController.toggleState(routine.sensorId, 1);
+                        deviceController.toggleState(routine.actuatorId, 0);
+                    }
+                }
+            }
+        };
+
+        GpioPinListenerDigital listenerInterruptorSuite = (GpioPinDigitalStateChangeEvent event) -> {
+            System.out.println(event.getState());
+            for (RoutineEntity routine : routines) {
+                if (routine.sensorId == 7) {
+                    if (interruptorSuite.isHigh()){
+                    deviceController.toggleState(routine.sensorId, 1);
+                    deviceController.toggleState(routine.actuatorId, 0);
+                    }
+                }
+            }
+        };
+
+        GpioPinListenerDigital listenerInterruptorHidro = (GpioPinDigitalStateChangeEvent event) -> {
+            System.out.println(event.getState());
+            for (RoutineEntity routine : routines) {
+                if (routine.sensorId == 8) {
+                    if (interruptorHidro.isHigh()){
+                    deviceController.toggleState(routine.sensorId, 1);
+                    deviceController.toggleState(routine.actuatorId, 0);
+                    }
+                }
+            }
+        };
+
+        if (i == 0){
+            interruptorSala.addListener(listenerInterruptorSala);
+            interruptorCozinha.addListener(listenerInterruptorCozinha);
+            interruptorSuite.addListener(listenerInterruptorSuite);
+            interruptorHidro.addListener(listenerInterruptorHidro);
+            i = 1;
         }
     }
 }
