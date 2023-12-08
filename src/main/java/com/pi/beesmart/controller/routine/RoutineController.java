@@ -93,7 +93,7 @@ public class RoutineController {
     }
 
     //Método responsável por executar as rotinas
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedDelay = 5000)
     public void executeRoutineONOFF() {
 
         List<RoutineEntity> routines = routineDAO.getAllRoutines();
